@@ -6,7 +6,7 @@
 #include <vector>
 #include <array>
 
-// Projeto d jogo Genius com a BleagleBone Black. Pedro Victor e Francisco Kennedi 
+// Projeto do jogo Genius com a BleagleBone Black. Pedro Victor e Francisco Kennedi 
 
 using namespace BlackLib;
 
