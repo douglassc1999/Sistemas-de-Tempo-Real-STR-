@@ -101,6 +101,18 @@ int main(){
 				scanf("%s", pidP);
 				printf("\n\n");
 				printf("Digite a nova CPU do processo: \n\n");
+				printf("\n\n");
+
+				printf("CPU 1 = 0x01\n");
+				printf("CPU 2 = 0x02\n");
+				printf("CPU 3 = 0x03\n");
+				printf("CPU 4 = 0x04\n");
+				printf("CPU 5 = 0x05\n");
+				printf("CPU 6 = 0x06\n");
+				printf("CPU 7 = 0x07\n");
+				printf("CPU 8 = 0x08\n");
+				printf("\n\n");
+
 				scanf("%s", cpu);
 				printf("\n\n");
 				strcat(comando1, cpu);
