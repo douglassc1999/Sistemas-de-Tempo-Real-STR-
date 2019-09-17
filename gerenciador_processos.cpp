@@ -78,6 +78,7 @@ int main(){
 				printf("\n\n");
 				setpriority(PRIO_PROCESS, PID, prio);
 				printf("Nova prioridade do processo: %d", getpriority(PRIO_PROCESS, PID));
+				printf("\n\n");
 				sleep(5);
 				break;
 		    	case 6:
