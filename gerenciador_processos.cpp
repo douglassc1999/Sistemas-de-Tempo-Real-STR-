@@ -3,6 +3,9 @@ Alunos: Pedro Victor Andrade Alves
         Francisco Kennedi
 Projeto: Gerenciador de processos
 */
+
+//taskset -p 0x01 <pid>
+
 #include <signal.h> // definição dos sinais de interrupções
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,6 +18,9 @@ int op = 0;
 char op2 = 'r';
 char nomeP[15]; 
 char comando[] = "ps -C ";
+char cpu[10];
+char comando1[] = "taskset -p ";
+char pidP[10];
 int PID = 0;
 int prio = 0;
 bool refresh = true;
@@ -91,6 +97,18 @@ int main(){
 				sleep(5);
 				break;
 		    	case 6:
+				printf("Digite o PID do processo: \n\n");
+				scanf("%s", pidP);
+				printf("\n\n");
+				printf("Digite a nova CPU do processo: \n\n");
+				scanf("%s", cpu);
+				printf("\n\n");
+				strcat(comando1, cpu);
+				strcat(comando1, " ");
+				strcat(comando1, pidP);
+				system(comando1);
+				printf("\n\n");
+				sleep(10);
 				break;
 		}		
 	   
