@@ -7,11 +7,14 @@ Projeto: Gerenciador de processos
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/time.h>     // getpriority(int which, int who)  setpriority(int which, int who, int prio);
+#include <sys/resource.h>
 
 int op = 0;
 char op2 = 'r';
-char nome_p; 
+char nome_p[15]; 
 int PID = 0;
+int prio = 0;
 bool refresh = true;
 
 //string nome_processos;
@@ -44,9 +47,10 @@ int main(){
 		switch(op){
     
 	      	    	case 1:
-				printf("Digite o nome do processo: \n\n");
-				//scanf("%s", &nome_p);
+				printf("Digite o PID do processo: \n\n");
+				//scanf("%s", nome_p);
 				//system("ps aux | grep %s", nome_p);
+				
 				break;
 		    	case 2:
 				printf("Digite o PID do processo: \n\n");
@@ -64,7 +68,17 @@ int main(){
 				kill(PID, SIGKILL);
 				break;
 		    	case 5:
-				
+				printf("Digite o PID do processo: \n\n");
+				scanf("%d", &PID);
+				printf("\n\n");
+				printf("Prioridade do processo: %d", getpriority(PRIO_PROCESS, PID));
+				printf("\n\n");
+				printf("Digite um novo valor de prioridade: \n\n");	
+				scanf("%d", &prio);
+				printf("\n\n");
+				setpriority(PRIO_PROCESS, PID, prio);
+				printf("Nova prioridade do processo: %d", getpriority(PRIO_PROCESS, PID));
+				sleep(5);
 				break;
 		    	case 6:
 				break;
