@@ -9,10 +9,12 @@ Projeto: Gerenciador de processos
 #include <unistd.h>
 #include <sys/time.h>     // getpriority(int which, int who)  setpriority(int which, int who, int prio);
 #include <sys/resource.h>
+#include <string.h>
 
 int op = 0;
 char op2 = 'r';
-char nome_p[15]; 
+char nomeP[15]; 
+char comando[] = "ps -C ";
 int PID = 0;
 int prio = 0;
 bool refresh = true;
@@ -28,9 +30,11 @@ int main(){
 			system("clear");
 			//system("ps -a -l\n\n ");
 			system("ps -e -o s,pid,uname,cmd,pmem,pcpu --sort=-pmem,-pcpu | head -20");
+			printf("\n\n");
 			printf("Digite 'm' para ver o menu e 'r' para dar refresh: ");
-			
-			scanf("%c", &op2);		 	
+			printf("\n\n");
+			scanf("%c", &op2);
+			printf("\n\n");		 	
 			if(op2 == 'm'){
 				refresh = false;
 				op2 = 'r';
@@ -39,6 +43,7 @@ int main(){
 					
 		}
 		printf("Digite: 1 - Filtar | 2 - Pausar | 3 - Continuar | 4 - Matar | 5 - Muda prioridade | 6 - Escolher CPU\n");
+		printf("\n\n");
 		printf("Insira a operação:\n");
 		scanf("%i", &op);
 		
@@ -47,9 +52,13 @@ int main(){
 		switch(op){
     
 	      	    	case 1:
-				printf("Digite o PID do processo: \n\n");
-				//scanf("%s", nome_p);
-				//system("ps aux | grep %s", nome_p);
+				printf("Digite o nome do processo: \n\n");
+				scanf("%s", nomeP);
+				strcat(comando, nomeP);
+				printf("\n\n");
+				system(comando);
+				printf("\n\n");
+				sleep(10);
 				
 				break;
 		    	case 2:
