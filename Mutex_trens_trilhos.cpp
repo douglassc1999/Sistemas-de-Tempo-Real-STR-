@@ -123,7 +123,7 @@ int main(int argc, char * argv[]) {
    
 
     while (true) {
-	tempo_T1 = vel_T1.getIntValue();
+	    tempo_T1 = vel_T1.getIntValue();
         tempo_T2 = vel_T2.getIntValue();
         tempo_T3 = vel_T3.getIntValue();
 
@@ -131,4 +131,76 @@ int main(int argc, char * argv[]) {
 
     sleep(5);
     return 0;
+}
+
+void *thread_function_T1(void *arg) {
+    Trem1_T1.setValue(high);
+    sleep(tempo_T1);
+    Trem1_T1.setValue(low);
+    Trem2_T1.setValue(high);
+    sleep(tempo_T1);
+    Trem2_T1.setValue(low);
+    //-------------------------------
+    pthread_mutex_lock(&work_mutex1); 
+    //-------------------------------
+    Trem3_T1.setValue(high);
+    sleep(tempo_T1);
+    Trem3_T1.setValue(low);
+    //-------------------------------
+    pthread_mutex_unlock(&work_mutex1);
+    //-------------------------------
+    Trem4_T1.setValue(high);
+    sleep(tempo_T1);
+
+    pthread_exit(0);
+}
+
+void *thread_function_T2(void *arg) {
+    //-------------------------------
+    pthread_mutex_lock(&work_mutex1);
+    //-------------------------------
+    Trem1_T2.setValue(high);
+    sleep(tempo_T2);
+    Trem1_T2.setValue(low);
+    //-------------------------------
+    pthread_mutex_unlock(&work_mutex1);
+    //-------------------------------
+    Trem2_T2.setValue(high);
+    sleep(tempo_T2);
+    Trem2_T2.setValue(low);
+    //-------------------------------
+    pthread_mutex_lock(&work_mutex2);
+    //-------------------------------
+    Trem3_T2.setValue(high);
+    sleep(tempo_T2);
+    Trem3_T2.setValue(low);
+    //-------------------------------
+    pthread_mutex_unlock(&work_mutex2);
+    //-------------------------------
+    Trem4_T2.setValue(high);
+    sleep(tempo_T2);
+   
+    pthread_exit(0);
+}
+
+void *thread_function_T3(void *arg) {
+    //-------------------------------
+    pthread_mutex_lock(&work_mutex2);
+    //-------------------------------
+    Trem1_T3.setValue(high);
+    sleep(tempo_T3);
+    Trem1_T3.setValue(low);
+    //-------------------------------
+    pthread_mutex_unlock(&work_mutex2);
+    //-------------------------------
+    Trem2_T3.setValue(high);
+    sleep(tempo_T3);
+    Trem2_T3.setValue(low);
+    Trem3_T3.setValue(high);
+    sleep(tempo_T3);
+    Trem3_T3.setValue(low);
+    Trem4_T3.setValue(high);
+    sleep(tempo_T3);
+    
+    pthread_exit(0);
 }
