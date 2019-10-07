@@ -123,7 +123,7 @@ int main(int argc, char * argv[]) {
    
 
     while (true) {
-	    tempo_T1 = vel_T1.getIntValue();
+	tempo_T1 = vel_T1.getIntValue();
         tempo_T2 = vel_T2.getIntValue();
         tempo_T3 = vel_T3.getIntValue();
 
