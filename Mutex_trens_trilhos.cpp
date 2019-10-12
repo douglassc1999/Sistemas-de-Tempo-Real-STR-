@@ -2,7 +2,7 @@
 #include <time.h>
 #include <iostream>
 #include "BlackGPIO/BlackGPIO.h"
-#include "../ADC/Adc.h"
+#include "ADC/Adc.h"
 #include <unistd.h>
 #include <vector>
 #include <array>
@@ -45,12 +45,10 @@ char work_area1[WORK_SIZE];
 char work_area2[WORK_SIZE];
 int time_to_exit = 0; 
 
-int main(int argc, char * argv[]) {
- 
-    // Configura entradas analógicas para os potenciômetros (controle de velocidade dos trens)
-    ADC vel_T1(AINx::AIN0); //pino P9_39
-    ADC vel_T2(AINx::AIN1); //pino P9_40
-    ADC vel_T3(AINx::AIN2); //pino p9_37 
+  // Configura entradas analógicas para os potenciômetros (controle de velocidade dos trens)
+    ADC vel_T1(AIN0); //pino P9_39
+    ADC vel_T2(AIN1); //pino P9_40
+    ADC vel_T3(AIN2); //pino p9_37 
 
     // Configurando como saida os LEDs dos trens do trilho 1
     BlackGPIO Trem1_T1(GPIO_26, output);
@@ -67,9 +65,10 @@ int main(int argc, char * argv[]) {
     BlackGPIO Trem2_T3(GPIO_46, output);
     BlackGPIO Trem3_T3(GPIO_27, output);
     BlackGPIO Trem4_T3(GPIO_69, output);
-    
+
+
+int main(int argc, char * argv[]) {
     // Os trens comecam parados, ou seja, os LEDs ficam apagados no inicio
-  
     Trem1_T1.setValue(low);
     Trem2_T1.setValue(low);
     Trem3_T1.setValue(low);
@@ -84,7 +83,8 @@ int main(int argc, char * argv[]) {
     Trem2_T3.setValue(low);
     Trem3_T3.setValue(low);
     Trem4_T3.setValue(low);
-
+ 
+   
     int res;
     pthread_t thread_T1;
     pthread_t thread_T2;
