@@ -16,15 +16,13 @@
   Projeto: controle de região crítica com mutex, 
            no contexto da movimentação de trens
 
-  Usar -lpthread para compilar
-
 Esquemático:
 	
-	TRILHO 1                 TRILHO 2                  TRILHO 3
-		 Região Crítica            Região Crítica
-	Trem2_T1-----------------Trem2_T2-------------------Trem2_T3
-Trem1_T1	Trem3_T1  Trem1_T2	  Trem3_T2  Trem1_T3        Trem3_T3
-	Trem4_T1------------------Trem4_T2-------------------Trem4_T3	
+	TREM 1                 TREM 2               
+		 Região Crítica           
+	
+Trem1_T1	Trem1_T2  Trem2_T3	  Trem2_T4  
+		
 
 */
 
@@ -32,175 +30,102 @@ using namespace BlackLib;
 
 int tempo_T1 = 0;
 int tempo_T2 = 0;
-int tempo_T3 = 0;
 
-void *thread_function_T1(void *arg);
-void *thread_function_T2(void *arg);
-void *thread_function_T3(void *arg);
-pthread_mutex_t work_mutex1; /* proteção para: work_area e time_to_exit */
-pthread_mutex_t work_mutex2;
 
-#define WORK_SIZE 1024
-char work_area1[WORK_SIZE];
-char work_area2[WORK_SIZE];
-int time_to_exit = 0; 
+pthread_mutex_t M1; 
 
-  // Configura entradas analógicas para os potenciômetros (controle de velocidade dos trens)
-    ADC vel_T1(AIN0); //pino P9_39
-    ADC vel_T2(AIN1); //pino P9_40
-    ADC vel_T3(AIN2); //pino p9_37 
+BlackGPIO Trem1_T1(GPIO_26, output);
+BlackGPIO Trem1_T2(GPIO_44, output);
+BlackGPIO Trem2_T3(GPIO_68, output);
+BlackGPIO Trem2_T4(GPIO_67, output);
 
-    // Configurando como saida os LEDs dos trens do trilho 1
-    BlackGPIO Trem1_T1(GPIO_26, output);
-    BlackGPIO Trem2_T1(GPIO_44, output);
-    BlackGPIO Trem3_T1(GPIO_68, output);
-    BlackGPIO Trem4_T1(GPIO_67, output);
-    // Configurando como saida os LEDs dos trens do trilho 2
-    BlackGPIO Trem1_T2(GPIO_60, output);
-    BlackGPIO Trem2_T2(GPIO_47, output);
-    BlackGPIO Trem3_T2(GPIO_45, output);
-    BlackGPIO Trem4_T2(GPIO_49, output);
-    // Configurando como saida os LEDs dos trens do trilho 3
-    BlackGPIO Trem1_T3(GPIO_48, output);
-    BlackGPIO Trem2_T3(GPIO_46, output);
-    BlackGPIO Trem3_T3(GPIO_27, output);
-    BlackGPIO Trem4_T3(GPIO_69, output);
+void *trem1(void *arg){
+  while(true){
+	  Trem1_T1.setValue(high);
+	  sleep(tempo_T1);
+          Trem1_T1.setValue(low);
+	  pthread_mutex_lock(&M1);
+          Trem1_T2.setValue(high);
+          sleep(tempo_T1);
+          Trem1_T2.setValue(low);
+          pthread_mutex_unlock(&M1);	
+  }
+  pthread_exit(0);
+}
+
+void *trem2(void *arg){
+  while(true){
+   	pthread_mutex_lock(&M1);
+   	Trem2_T3.setValue(high);
+   	sleep(tempo_T2);
+        Trem2_T3.setValue(low);
+        pthread_mutex_unlock(&M1);
+        Trem2_T4.setValue(high);
+        sleep(tempo_T2);
+        Trem2_T4.setValue(low);
+        
+  }
+  pthread_exit(0);
+}
 
 
 int main(int argc, char * argv[]) {
-    // Os trens comecam parados, ou seja, os LEDs ficam apagados no inicio
     Trem1_T1.setValue(low);
-    Trem2_T1.setValue(low);
-    Trem3_T1.setValue(low);
-    Trem4_T1.setValue(low);
-
     Trem1_T2.setValue(low);
-    Trem2_T2.setValue(low);
-    Trem3_T2.setValue(low);
-    Trem4_T2.setValue(low);
-
-    Trem1_T3.setValue(low);
     Trem2_T3.setValue(low);
-    Trem3_T3.setValue(low);
-    Trem4_T3.setValue(low);
- 
-   
-    int res;
-    pthread_t thread_T1;
-    pthread_t thread_T2;
-    pthread_t thread_T3;
-    void *thread_result;
-    // Inicialização dos Mutexs 1 e 2
-    res = pthread_mutex_init(&work_mutex1, NULL);
-    if (res != 0) {
-        perror("Iniciação do Mutex1 falhou");
-        exit(EXIT_FAILURE);
-    }
-    res = pthread_mutex_init(&work_mutex2, NULL);
-    if (res != 0) {
-        perror("Iniciação do Mutex2 falhou");
-        exit(EXIT_FAILURE);
-    }
+    Trem2_T4.setValue(low);
 
-    // Criação da thread_T1
-    res = pthread_create(&thread_T1, NULL, thread_function_T1, NULL);
-    if (res != 0) {
-        perror("Criação da thread_T1 falhou");
-        exit(EXIT_FAILURE);
-    }
-     // Criação da thread_T2
-     res = pthread_create(&thread_T2, NULL, thread_function_T2, NULL);
-    if (res != 0) {
-        perror("Criação da thread_T2 falhou");
-        exit(EXIT_FAILURE);
-    }
-     // Criação da thread_T3
-     res = pthread_create(&thread_T3, NULL, thread_function_T3, NULL);
-    if (res != 0) {
-        perror("Criação da thread_T3 falhou");
-        exit(EXIT_FAILURE);
-    }
-   
+  int res;
+  pthread_t thread1, thread2;
 
-    while (true) {
-	tempo_T1 = vel_T1.getIntValue();
-        tempo_T2 = vel_T2.getIntValue();
-        tempo_T3 = vel_T3.getIntValue();
+  void *thread_result;
+  
+  scanf("%i", &tempo_T1);
+  scanf("%i", &tempo_T2);
 
-    }
+  // ------ criando multex M1 ------
+  res = pthread_mutex_init(&M1, NULL);
+  if (res != 0)
+  {
+    perror("Iniciação do Mutex M1 falhou");
+    exit(EXIT_FAILURE);
+  }
 
-    sleep(5);
-    return 0;
-}
+  //------ Thread 1 (executa a fn: trem 1) ------
+  res = pthread_create(&thread1, NULL, trem1, NULL);
+  if (res != 0)
+  {
+    perror("Criação da thread 1 falhou");
+    exit(EXIT_FAILURE);
+  }
 
-void *thread_function_T1(void *arg) {
-    Trem1_T1.setValue(high);
-    sleep(tempo_T1);
-    Trem1_T1.setValue(low);
-    Trem2_T1.setValue(high);
-    sleep(tempo_T1);
-    Trem2_T1.setValue(low);
-    //-------------------------------
-    pthread_mutex_lock(&work_mutex1); 
-    //-------------------------------
-    Trem3_T1.setValue(high);
-    sleep(tempo_T1);
-    Trem3_T1.setValue(low);
-    //-------------------------------
-    pthread_mutex_unlock(&work_mutex1);
-    //-------------------------------
-    Trem4_T1.setValue(high);
-    sleep(tempo_T1);
+  //------ Thread 2 (executa a fn: trem 2) ------
+  res = pthread_create(&thread2, NULL, trem2, NULL);
+  if (res != 0)
+  {
+    perror("Criação da thread 2 falhou");
+    exit(EXIT_FAILURE);
+  }
 
-    pthread_exit(0);
-}
 
-void *thread_function_T2(void *arg) {
-    //-------------------------------
-    pthread_mutex_lock(&work_mutex1);
-    //-------------------------------
-    Trem1_T2.setValue(high);
-    sleep(tempo_T2);
-    Trem1_T2.setValue(low);
-    //-------------------------------
-    pthread_mutex_unlock(&work_mutex1);
-    //-------------------------------
-    Trem2_T2.setValue(high);
-    sleep(tempo_T2);
-    Trem2_T2.setValue(low);
-    //-------------------------------
-    pthread_mutex_lock(&work_mutex2);
-    //-------------------------------
-    Trem3_T2.setValue(high);
-    sleep(tempo_T2);
-    Trem3_T2.setValue(low);
-    //-------------------------------
-    pthread_mutex_unlock(&work_mutex2);
-    //-------------------------------
-    Trem4_T2.setValue(high);
-    sleep(tempo_T2);
-   
-    pthread_exit(0);
-}
+  // ----- Espera termino das threads
+  res = pthread_join(thread1, &thread_result);
+  if (res != 0)
+  {
+    perror("Juncao da Thread 1 falhou");
+    exit(EXIT_FAILURE);
+  }
+  res = pthread_join(thread2, &thread_result);
+  if (res != 0)
+  {
+    perror("Juncao da Thread 2 falhou");
+    exit(EXIT_FAILURE);
+  }
 
-void *thread_function_T3(void *arg) {
-    //-------------------------------
-    pthread_mutex_lock(&work_mutex2);
-    //-------------------------------
-    Trem1_T3.setValue(high);
-    sleep(tempo_T3);
-    Trem1_T3.setValue(low);
-    //-------------------------------
-    pthread_mutex_unlock(&work_mutex2);
-    //-------------------------------
-    Trem2_T3.setValue(high);
-    sleep(tempo_T3);
-    Trem2_T3.setValue(low);
-    Trem3_T3.setValue(high);
-    sleep(tempo_T3);
-    Trem3_T3.setValue(low);
-    Trem4_T3.setValue(high);
-    sleep(tempo_T3);
-    
-    pthread_exit(0);
+
+  //----- destruíndo mutex
+  pthread_mutex_destroy(&M1);
+  exit(EXIT_SUCCESS);
+
+  return 0;
 }
