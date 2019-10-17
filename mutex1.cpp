@@ -8,11 +8,7 @@
 #include <semaphore.h>
 #include <string.h>
 
-
-
 pthread_mutex_t M1, M2, M3; 
-
-
 
 void L(int trem, int trilho, int sono){
 	printf("sou o trem %i, estou no trilho %i \n", trem, trilho);
@@ -24,9 +20,9 @@ void L(int trem, int trilho, int sono){
 void *trem1(void *arg){
   while(true){
 	L(1, 1, 1);
-	pthread_mutex_lock(&M1);
-  	L(1, 2, 1);
 	pthread_mutex_lock(&M2);
+  	L(1, 2, 1);
+        pthread_mutex_lock(&M1);
 	L(1, 3, 5);
         pthread_mutex_unlock(&M1);
 	pthread_mutex_unlock(&M2);
@@ -86,7 +82,6 @@ int main(int argc, char * argv[]) {
     perror("Iniciação do Mutex M2 falhou");
     exit(EXIT_FAILURE);
   }
-  pthread_mutex_lock(&M2);
   
      // ------ criando multex M3 ------
   res = pthread_mutex_init(&M3, NULL);
@@ -150,4 +145,3 @@ int main(int argc, char * argv[]) {
 
   return 0;
 }
-
