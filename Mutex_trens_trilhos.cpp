@@ -31,6 +31,8 @@ using namespace BlackLib;
 int tempo_T1 = 0;
 int tempo_T2 = 0;
 
+ADC vel_T1(AIN0);
+ADC vel_T2(AIN1);
 
 pthread_mutex_t M1; 
 
@@ -41,6 +43,8 @@ BlackGPIO Trem2_T4(GPIO_67, output);
 
 void *trem1(void *arg){
   while(true){
+	  tempo_T1 = (vel_T1.getIntValue()*10)/1023;		
+
 	  Trem1_T1.setValue(high);
 	  sleep(tempo_T1);
           Trem1_T1.setValue(low);
@@ -55,6 +59,8 @@ void *trem1(void *arg){
 
 void *trem2(void *arg){
   while(true){
+	tempo_T2 = (vel_T2.getIntValue()*10)/1023;
+
    	pthread_mutex_lock(&M1);
    	Trem2_T3.setValue(high);
    	sleep(tempo_T2);
@@ -80,9 +86,6 @@ int main(int argc, char * argv[]) {
 
   void *thread_result;
   
-  scanf("%i", &tempo_T1);
-  scanf("%i", &tempo_T2);
-
   // ------ criando multex M1 ------
   res = pthread_mutex_init(&M1, NULL);
   if (res != 0)
