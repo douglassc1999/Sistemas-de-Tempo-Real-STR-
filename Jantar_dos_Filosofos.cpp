@@ -45,7 +45,7 @@ void *filosofo1(void *arg){
 	sleep(1);
   	pthread_mutex_lock(&h5);
         FC(1, 1);
-        pthread_mutex_unlock(&h1);
+	pthread_mutex_unlock(&h1);
 	pthread_mutex_unlock(&h5);
   }
   pthread_exit(0);
@@ -58,7 +58,7 @@ void *filosofo2(void *arg){
 	sleep(1);
   	pthread_mutex_lock(&h2);
         FC(2, 1);
-        pthread_mutex_unlock(&h1);
+	pthread_mutex_unlock(&h1);
 	pthread_mutex_unlock(&h2);
   }
   pthread_exit(0);
@@ -67,12 +67,12 @@ void *filosofo2(void *arg){
 void *filosofo3(void *arg){
   while(true){
 	FP(3, 1);
-	pthread_mutex_lock(&h2);
+	pthread_mutex_lock(&h3);
 	sleep(1);
-  	pthread_mutex_lock(&h3);
+  	pthread_mutex_lock(&h2);
         FC(3, 1);
-        pthread_mutex_unlock(&h2);
 	pthread_mutex_unlock(&h3);
+	pthread_mutex_unlock(&h2);
   }
   pthread_exit(0);
 }
@@ -84,7 +84,7 @@ void *filosofo4(void *arg){
 	sleep(1);
   	pthread_mutex_lock(&h4);
         FC(4, 1);
-        pthread_mutex_unlock(&h3);
+	pthread_mutex_unlock(&h3);
 	pthread_mutex_unlock(&h4);
   }
   pthread_exit(0);
@@ -93,12 +93,12 @@ void *filosofo4(void *arg){
 void *filosofo5(void *arg){
   while(true){
 	FP(5, 1);
-	pthread_mutex_lock(&h4);
+	pthread_mutex_lock(&h5);
 	sleep(1);
-  	pthread_mutex_lock(&h5);
+  	pthread_mutex_lock(&h4);
         FC(5, 1);
-        pthread_mutex_unlock(&h4);
 	pthread_mutex_unlock(&h5);
+	pthread_mutex_unlock(&h4);
   }
   pthread_exit(0);
 }
@@ -238,4 +238,3 @@ int main(int argc, char * argv[]) {
 
   return 0;
 }
-
