@@ -9,9 +9,9 @@
 #include <string.h>
 
 
-pthread_mutex_t M1, M2, M3, M4;
+pthread_mutex_t M1, M2, M3, M4, M5;
 
-void L(int trem, int trilho, tempo){
+void L(int trem, int trilho, int tempo){
 	printf("sou o trem %i, estou no trilho %i \n", trem, trilho);
 	sleep(tempo);
 }
@@ -71,6 +71,7 @@ void *trem4(void *arg){
 	pthread_mutex_unlock(&M4);
 	pthread_mutex_lock(&M3);
 	L(4, 14, 1);
+	pthread_mutex_unlock(&M3);
  
   }
   pthread_exit(0);
@@ -114,6 +115,14 @@ int main(int argc, char * argv[]) {
   if (res != 0)
   {
     perror("Iniciação do Mutex M4 falhou");
+    exit(EXIT_FAILURE);
+  }
+
+  // ------ criando multex M5 ------
+  res = pthread_mutex_init(&M5, NULL);
+  if (res != 0)
+  {
+    perror("Iniciação do Mutex M5 falhou");
     exit(EXIT_FAILURE);
   }
 
@@ -181,6 +190,7 @@ int main(int argc, char * argv[]) {
   pthread_mutex_destroy(&M2);
   pthread_mutex_destroy(&M3);
   pthread_mutex_destroy(&M4);
+  pthread_mutex_destroy(&M5);
   exit(EXIT_SUCCESS);
 
   return 0;
