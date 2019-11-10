@@ -19,8 +19,8 @@ int tempo_T4 = 0;
 
 ADC vel_T1(AIN0);
 ADC vel_T2(AIN1);
-ADC vel_T1(AIN2);
-ADC vel_T2(AIN3);
+ADC vel_T3(AIN2);
+ADC vel_T4(AIN3);
 
 pthread_mutex_t M1, M2, M3, M4, M5;
 
