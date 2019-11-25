@@ -230,8 +230,8 @@ void *trem1(void *arg) {
 	int sleepTime = MAX_SLEEP_TIME;
 	
 	BlackGPIO Trem1_T1(GPIO_66, output);
-	BlackGPIO Trem1_T2(GPIO_26, output);
-	BlackGPIO Trem1_T3(GPIO_44, output);
+	BlackGPIO Trem1_T2(GPIO_67, output);
+	BlackGPIO Trem1_T3(GPIO_69, output);
 	
 	while (true) {
 		sleepTime = sleep_time[0];
@@ -256,10 +256,10 @@ void *trem1(void *arg) {
 void *trem2(void *arg) {
 	int sleepTime = MAX_SLEEP_TIME;
 	
-	BlackGPIO Trem2_T4(GPIO_69, output);
+	BlackGPIO Trem2_T4(GPIO_45, output);
 	BlackGPIO Trem2_T5(GPIO_68, output);
-	BlackGPIO Trem2_T6(GPIO_67, output);
-	BlackGPIO Trem2_T7(GPIO_60, output);
+	BlackGPIO Trem2_T6(GPIO_44, output);
+	BlackGPIO Trem2_T7(GPIO_26, output);
 
 	while (true) {
 		sleepTime = sleep_time[1];
@@ -288,9 +288,9 @@ void *trem2(void *arg) {
 void *trem3(void *arg) {
 	int sleepTime = MAX_SLEEP_TIME;
 
-	BlackGPIO Trem3_T8(GPIO_27, output);
+	BlackGPIO Trem3_T8(GPIO_48, output);
 	BlackGPIO Trem3_T9(GPIO_47, output);
-	BlackGPIO Trem3_T10(GPIO_45, output);
+	BlackGPIO Trem3_T10(GPIO_27, output);
 	
 	while (true) {
 		sleepTime = sleep_time[2];
@@ -315,10 +315,10 @@ void *trem3(void *arg) {
 void *trem4(void *arg) {
 	int sleepTime = MAX_SLEEP_TIME;
 
-	BlackGPIO Trem4_T11(GPIO_20, output);
-	BlackGPIO Trem4_T12(GPIO_49, output);
-	BlackGPIO Trem4_T13(GPIO_48, output);
-	BlackGPIO Trem4_T14(GPIO_46, output);
+	BlackGPIO Trem4_T11(GPIO_46, output);
+	BlackGPIO Trem4_T12(GPIO_65, output);
+	BlackGPIO Trem4_T13(GPIO_61, output);
+	BlackGPIO Trem4_T14(GPIO_60, output);
 
 	while (true) {
 		sleepTime = sleep_time[3];
