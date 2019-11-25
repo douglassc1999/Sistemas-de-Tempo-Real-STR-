@@ -169,37 +169,44 @@ void *setSpeed(void *arg) {
 	int valueEntries[NUM_TRAINS];
 
 	// SOCKET
-	int server_sockfd;
-	size_t server_len;
-	socklen_t client_len;
-	struct sockaddr_in server_address;
-	struct sockaddr_in client_address;
+	int server_sockfd, client_sockfd;
+    	size_t server_len;
+    	socklen_t client_len;
+    	struct sockaddr_in server_address;
+    	struct sockaddr_in client_address;
 	
-	struct ip_mreq mreq;
+	struct ip_mreq mreq;  // para endere�o multicast
 
-	if ( (server_sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
-		printf("An error has occurred on opening socket");
-		exit(1);
-	}
-
+	unsigned short porta = 9734;
+    
+    	//unlink("server_socket");  // remocao de socket antigo
+    	if ( (server_sockfd = socket(AF_INET, SOCK_DGRAM, 0) )<0)// cria um novo socket
+    {
+        printf(" Houve erro na ebertura do socket ");
+        exit(1);
+    }
 	server_address.sin_family = AF_INET;
-	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	server_address.sin_port = htons(PORT_SCKT_SERVER);
+    	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+    	server_address.sin_port = htons(porta);
 
 	server_len = sizeof(server_address);
+    
+    if(  bind(server_sockfd, (struct sockaddr *) &server_address, server_len) < 0 )
+    {
+        perror("Houve error no Bind");
+        exit(1);
+    }
 
-	if ( bind(server_sockfd, (struct sockaddr *) &server_address, server_len) < 0 ) {
-		perror("An error has occurend on binding");
-		exit(1);
-	}
-
-	mreq.imr_multiaddr.s_addr = inet_addr(MULTICAST_ADDR);
-	mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-	if ( setsockopt(server_sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq) ) < 0) {
-		perror("setsockopt");
-		exit(1);
-	}
-
+	  // use setsockopt() para requerer inscri��o num grupo multicast
+    mreq.imr_multiaddr.s_addr=inet_addr(MULTICAST_ADDR);
+    mreq.imr_interface.s_addr=htonl(INADDR_ANY);
+    if (setsockopt(server_sockfd,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq)) < 0) {
+        perror("setsockopt");
+        exit(1);
+    }
+    printf(" IPPROTO_IP = %d\n", IPPROTO_IP);
+    printf(" SOL_SOCKET = %d\n", SOL_SOCKET);
+    printf(" IP_ADD_MEMBERSHIP = %d \n", IP_ADD_MEMBERSHIP);
 	while (true) {
 		client_len = sizeof(client_address);
 
