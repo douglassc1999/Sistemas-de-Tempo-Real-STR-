@@ -177,7 +177,7 @@ void *setSpeed(void *arg) {
 	
 	struct ip_mreq mreq;  // para endere�o multicast
 
-	unsigned short porta = 9735;
+	unsigned short porta = 9734;
     
     	//unlink("server_socket");  // remocao de socket antigo
     	if ( (server_sockfd = socket(AF_INET, SOCK_DGRAM, 0) )<0)// cria um novo socket
