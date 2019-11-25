@@ -264,7 +264,7 @@ void *setSpeed(void *arg) {
 		printf("Server received: (Train 1, Train 2, Train 3, Train 4) = (%d, %d, %d, %d)\n", valueEntries[0], valueEntries[1], valueEntries[2], valueEntries[3]);
 
 		for (int i = 0; i < NUM_TRAINS; i++) {
-			sleep_time[i] = MAX_SLEEP_TIME / ((valueEntries[i] / MAX_VALUE) + 1);
+			sleep_time[i] = (valueEntries[i]*MAX_SLEEP_TIME)/MAX_VALUE;
 		}
 
 		sleep(1);
