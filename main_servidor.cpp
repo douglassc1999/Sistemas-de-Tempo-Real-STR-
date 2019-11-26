@@ -288,7 +288,7 @@ void *trem2(void *arg) {
 void *trem3(void *arg) {
 	int sleepTime = MAX_SLEEP_TIME;
 
-	BlackGPIO Trem3_T8(GPIO_48, output);
+	BlackGPIO Trem3_T8(GPIO_20, output);
 	BlackGPIO Trem3_T9(GPIO_47, output);
 	BlackGPIO Trem3_T10(GPIO_27, output);
 	
